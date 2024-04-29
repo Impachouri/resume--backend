@@ -1,15 +1,17 @@
 import dotenv from "dotenv";
-import express, { Express, Request, Response } from "express";
-
 dotenv.config();
 
-const app: Express = express();
-const port = process.env.PORT || 3000;
+import connectDB from "./db";
+import app from "./app";
 
-app.get("/", (req: Request, res: Response) => {
-  res.json({ HEY: "hey" });
-});
+const PORT = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  console.log(`Hey i'm listening at port ${port}`);
-});
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server start listening at port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log("Error while connecting Mongo DB ", error);
+  });
