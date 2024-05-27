@@ -3,11 +3,11 @@ import { singUp, singIn, signOut } from "../controllers/auth.controller";
 import { upload } from "../middlewares/multer.middleware";
 import verifyJWT from "../middlewares/auth.middleware";
 
-const router: Router = Router();
+const userRouter: Router = Router();
 
-router.route("/signup").post(upload.single("profile_photo"), singUp);
-router.route("/signin").post(singIn);
+userRouter.route("/signup").post(upload.single("profile_photo"), singUp);
+userRouter.route("/signin").post(singIn);
 
-router.route("/singout").post(verifyJWT, signOut);
+userRouter.route("/signout").post(verifyJWT, signOut);
 
-export default router;
+export default userRouter;

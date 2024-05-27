@@ -4,7 +4,13 @@ import jwt from "jsonwebtoken";
 import { UserDocument } from "./usersType";
 
 const userSchema = new Schema<UserDocument>({
-  fullName: {
+  fName: {
+    type: String,
+    required: true,
+    lowercase: true,
+    trim: true,
+  },
+  lName: {
     type: String,
     required: true,
     lowercase: true,
@@ -49,7 +55,8 @@ userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
-      fullName: this.fulllName,
+      fName: this.fName,
+      lName: this.lName,
     },
     process.env.ACCESS_TOKEN_SECRET as string,
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }

@@ -9,17 +9,17 @@ import { AuthenticateUserRequest } from "../types/types";
 
 const singUp = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { fullName, email, password } = req.body;
-    console.log(fullName, " ", email, " ", password);
+    const { fName, lName, email, password } = req.body;
     if (
-      [fullName, email, password].some((data: string) => data?.trim() === "")
+      [fName, lName, email, password].some(
+        (data: string) => data?.trim() === ""
+      )
     ) {
       throw new ApiError(400, "All Fields are required");
     }
 
     const user: UserDocument | null = await User.findOne({ email });
     if (user) {
-      console.log(user);
       throw new ApiError(409, "User already Exits with given mail");
     }
 
@@ -28,7 +28,8 @@ const singUp = asyncHandler(
     const profilePhoto: any = await cloudUpload(profilePhotoLocalPath);
 
     const newUser: UserDocument = await User.create({
-      fullName,
+      fName,
+      lName,
       email,
       profile_photo: profilePhoto?.url || "",
       password,
@@ -43,7 +44,7 @@ const singUp = asyncHandler(
 const singIn = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
-    console.log(email, " ", password);
+
     if (!email || !password) {
       throw new ApiError(400, "Please porvide Email & Password");
     }
@@ -51,7 +52,6 @@ const singIn = asyncHandler(
     const user: UserDocument | null = await User.findOne({ email });
     if (!user) throw new ApiError(400, "No user exits with this email");
 
-    console.log(user);
     const isPasswordCorrect: boolean = await user.comparePassword(password);
     if (!isPasswordCorrect) {
       throw new ApiError(400, "Entered email/password is worng.");
@@ -71,13 +71,13 @@ const singIn = asyncHandler(
     res
       .status(200)
       .cookie("accessToken", accessToken, option)
-      .json(new ApiResponse(200, { user: user }, "User singin successfully"));
+      .json(new ApiResponse(200, { user: user }, "User Singin successfully"));
   }
 );
 
 const signOut = asyncHandler(
   async (req: AuthenticateUserRequest, res: Response, next: NextFunction) => {
-    const user = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       req.user._id,
       {
         $unset: {

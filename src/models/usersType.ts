@@ -1,7 +1,8 @@
-import { Document, Types } from "mongoose";
+import { Document } from "mongoose";
 
 interface UserDocument extends Document {
-  fullName: string;
+  fName: string;
+  lName: string;
   email: string;
   password: string;
   profilePhoto?: string;
