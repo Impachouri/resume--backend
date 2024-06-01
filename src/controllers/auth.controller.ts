@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { CookieOptions, NextFunction, Request, Response } from "express";
 import { User } from "../models/user.model";
 import ApiError from "../utils/apiError";
 import ApiResponse from "../utils/apiResponse";
@@ -64,10 +64,10 @@ const singIn = asyncHandler(
     user.refreshToken = refreshToken;
     await user.save();
 
-    const option = {
+    const option: CookieOptions = {
       httpOnly: true,
       secure: true,
-      sameSite: false,
+      sameSite: "none",
     };
 
     res
