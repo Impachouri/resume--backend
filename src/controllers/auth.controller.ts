@@ -43,6 +43,7 @@ const singUp = asyncHandler(
 
 const singIn = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body);
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -54,7 +55,7 @@ const singIn = asyncHandler(
 
     const isPasswordCorrect: boolean = await user.comparePassword(password);
     if (!isPasswordCorrect) {
-      throw new ApiError(400, "Entered email/password is worng.");
+      throw new ApiError(400, "Entered email/password is wrong.");
     }
 
     const accessToken: string = user.generateAccessToken();
@@ -66,6 +67,7 @@ const singIn = asyncHandler(
     const option = {
       httpOnly: true,
       secure: true,
+      sameSite: false,
     };
 
     res
